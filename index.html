@@ -1,40 +1,93 @@
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
 
     <title>WebAR - Memorial San Martín</title>
 
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/three.js/build/ar-threex-location-only.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/aframe/build/aframe-ar.js"></script>
-    <script src="script.js"></script>
+
+    <!-- AR.js NFT -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+    <style>
+        .arjs-loader {
+            height: 100%;
+            width: 100%;
+
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            background-color: rgba(0, 0, 0, 0.8);
+
+            z-index: 9999;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .arjs-loader div {
+            text-align: center;
+            font-size: 1.2em;
+            color: white;
+        }
+    </style>
 </head>
 
 <body style="margin: 0; overflow: hidden;">
 
+    <!-- Pantalla mientras AR.js carga los archivos NFT -->
+    <div class="arjs-loader">
+        <div>
+            Cargando realidad aumentada...
+        </div>
+    </div>
+
     <a-scene
         vr-mode-ui="enabled: false"
-        renderer="antialias: true; alpha: true"
-        arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: false;"
+        renderer="logarithmicDepthBuffer: true"
+        embedded
+        arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
     >
 
-        <a-assets>
-            <a-asset-item
-                id="animated-asset"
-                src="assets/scene.gltf">
-            </a-asset-item>
-        </a-assets>
+        <!--
+            Imagen utilizada como referencia para el tracking.
 
-        <!-- El objeto será agregado mediante JavaScript -->
+            Si tenés:
+                cuadrado_test.fset
+                cuadrado_test.fset3
+                cuadrado_test.iset
 
-        <a-camera
-            gps-new-camera="gpsMinDistance: 1"
-            rotation-reader>
-        </a-camera>
+            se coloca solamente:
+                cuadrado_test
+        -->
+        <a-nft
+            type="nft"
+            url="assets/cuadrado_test/cuadrado_test"
+            smooth="true"
+            smoothCount="10"
+            smoothTolerance=".01"
+            smoothThreshold="5"
+        >
+
+            <!-- Modelo 3D -->
+            <a-entity
+                gltf-model="assets/scene.gltf"
+                position="0 0 0"
+                scale="1 1 1">
+            </a-entity>
+
+        </a-nft>
+
+        <!-- Cámara -->
+        <a-entity camera></a-entity>
 
     </a-scene>
 
 </body>
+
 </html>
