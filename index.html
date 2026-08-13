@@ -4,68 +4,53 @@
 <head>
     <meta charset="utf-8">
 
-    <title>WebAR - Memorial San Martín</title>
+    <title>WebAR - Test NFT</title>
 
-    <!-- A-Frame -->
-    <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
 
-    <!-- AR.js NFT -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
     <style>
-        .arjs-loader {
-            height: 100%;
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
             width: 100%;
-
-            position: absolute;
-            top: 0;
-            left: 0;
-
-            background-color: rgba(0, 0, 0, 0.8);
-
-            z-index: 9999;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: 100%;
         }
 
-        .arjs-loader div {
-            text-align: center;
-            font-size: 1.2em;
+        .status {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 99999;
+
+            padding: 10px;
+
+            background: rgba(0, 0, 0, 0.7);
             color: white;
+
+            font-family: Arial, sans-serif;
         }
     </style>
 </head>
 
-<body style="margin: 0; overflow: hidden;">
+<body>
 
-    <!-- Pantalla mientras AR.js carga los archivos NFT -->
-    <div class="arjs-loader">
-        <div>
-            Cargando realidad aumentada...
-        </div>
+    <div id="status" class="status">
+        Cargando NFT...
     </div>
 
     <a-scene
         vr-mode-ui="enabled: false"
-        renderer="logarithmicDepthBuffer: true"
+        renderer="logarithmicDepthBuffer: true; precision: medium;"
         embedded
         arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
     >
 
-        <!--
-            Imagen utilizada como referencia para el tracking.
-
-            Si tenés:
-                cuadrado_test.fset
-                cuadrado_test.fset3
-                cuadrado_test.iset
-
-            se coloca solamente:
-                cuadrado_test
-        -->
         <a-nft
+            id="target"
             type="nft"
             url="assets/cuadrado_test/cuadrado_test"
             smooth="true"
@@ -74,19 +59,38 @@
             smoothThreshold="5"
         >
 
-            <!-- Modelo 3D -->
-            <a-entity
-                gltf-model="assets/scene.gltf"
+            <!-- SOLO PARA PROBAR EL TRACKING -->
+            <a-box
                 position="0 0 0"
-                scale="1 1 1">
-            </a-entity>
+                scale="1 1 1"
+                color="red">
+            </a-box>
 
         </a-nft>
 
-        <!-- Cámara -->
         <a-entity camera></a-entity>
 
     </a-scene>
+
+    <script>
+        const status = document.getElementById("status");
+        const target = document.getElementById("target");
+
+        window.addEventListener("arjs-nft-loaded", () => {
+            console.log("NFT cargado");
+            status.textContent = "NFT cargado. Buscando imagen...";
+        });
+
+        target.addEventListener("markerFound", () => {
+            console.log("¡¡IMAGEN ENCONTRADA!!");
+            status.textContent = "¡¡IMAGEN ENCONTRADA!!";
+        });
+
+        target.addEventListener("markerLost", () => {
+            console.log("Imagen perdida");
+            status.textContent = "Imagen perdida";
+        });
+    </script>
 
 </body>
 
