@@ -6,10 +6,8 @@
 
     <title>WebAR - Memorial San Martín</title>
 
-    <!-- A-Frame -->
     <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@1.6.0/dist/aframe-master.min.js"></script>
 
-    <!-- AR.js NFT -->
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
 
     <style>
@@ -22,10 +20,12 @@
             height: 100%;
         }
 
-        .status {
+        #status {
             position: fixed;
+
             top: 20px;
             left: 50%;
+
             transform: translateX(-50%);
 
             z-index: 99999;
@@ -33,6 +33,7 @@
             padding: 10px 20px;
 
             background: rgba(0, 0, 0, 0.7);
+
             color: white;
 
             font-family: Arial, sans-serif;
@@ -41,19 +42,20 @@
             border-radius: 8px;
 
             text-align: center;
+
+            pointer-events: none;
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Texto visible sobre la cámara -->
-    <div id="status" class="status">
-        Cargando realidad aumentada...
+    <div id="status">
+        Inicializando cámara...
     </div>
 
     <a-scene
-        vr-mode-ui="enabled: false;"
+        vr-mode-ui="enabled: false"
         renderer="logarithmicDepthBuffer: true; precision: medium;"
         embedded
         arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
@@ -84,23 +86,76 @@
     </a-scene>
 
     <script>
+
         const status = document.getElementById("status");
         const target = document.getElementById("target");
 
-        window.addEventListener("arjs-nft-loaded", () => {
-            console.log("NFT cargado");
-            status.textContent = "NFT cargado. Buscando imagen...";
-        });
+        /*
+         * A-Frame terminó de inicializar
+         */
+        document.querySelector("a-scene").addEventListener(
+            "loaded",
+            () => {
 
-        target.addEventListener("markerFound", () => {
-            console.log("¡¡IMAGEN ENCONTRADA!!");
-            status.textContent = "¡¡IMAGEN ENCONTRADA!!";
-        });
+                console.log("A-Frame cargado");
 
-        target.addEventListener("markerLost", () => {
-            console.log("Imagen perdida");
-            status.textContent = "Imagen perdida";
-        });
+                status.textContent =
+                    "Cámara iniciada. Buscando imagen...";
+
+            }
+        );
+
+
+        /*
+         * AR.js encontró la imagen
+         */
+        target.addEventListener(
+            "markerFound",
+            () => {
+
+                console.log("¡¡IMAGEN ENCONTRADA!!");
+
+                status.textContent =
+                    "¡¡IMAGEN ENCONTRADA!!";
+
+            }
+        );
+
+
+        /*
+         * AR.js dejó de encontrar la imagen
+         */
+        target.addEventListener(
+            "markerLost",
+            () => {
+
+                console.log("Imagen perdida");
+
+                status.textContent =
+                    "Imagen perdida";
+
+            }
+        );
+
+
+        /*
+         * Errores de carga
+         */
+        window.addEventListener(
+            "error",
+            (event) => {
+
+                console.error(
+                    "Error:",
+                    event.error || event.message
+                );
+
+                status.textContent =
+                    "Error. Revisá la consola.";
+
+            }
+        );
+
     </script>
 
 </body>
