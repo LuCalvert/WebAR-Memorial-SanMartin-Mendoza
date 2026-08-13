@@ -49,7 +49,6 @@
 
 <body>
 
-    <!-- Pantalla mientras cargan los descriptores NFT -->
     <div class="arjs-loader">
         <div>Cargando realidad aumentada...</div>
     </div>
@@ -60,18 +59,6 @@
         embedded
         arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
     >
-
-        <!--
-            IMAGE TRACKING
-
-            Estos archivos:
-                cuadrado_test.fset
-                cuadrado_test.fset3
-                cuadrado_test.iset
-
-            se referencian mediante:
-                assets/cuadrado_test
-        -->
         <a-nft
             type="nft"
             url="assets/cuadrado_test/cuadrado_test"
@@ -80,16 +67,12 @@
             smoothTolerance=".01"
             smoothThreshold="5"
         >
-
-            <!--
-                MODELO 3D
-            -->
             <a-entity
                 id="memorial-model"
-                gltf-model="assets/scene.gltf"
-                scale="5 5 5"
-                position="50 150 0"
-            >
+                gltf-model="assets/Sanmar.glb"
+                position="0 0 0"
+                rotation="0 0 0"
+                scale="1 1 1">
             </a-entity>
 
         </a-nft>
