@@ -1,79 +1,62 @@
-window.addEventListener("load", () => {
-
-    const scene = document.querySelector("a-scene");
-    const camera = document.querySelector("[gps-new-camera]");
+window.onload = () => {
 
     let objectAdded = false;
 
-    camera.addEventListener(
-        "gps-camera-update-position",
-        (event) => {
+    const camera = document.querySelector("[gps-new-camera]");
+    const scene = document.querySelector("a-scene");
 
-            if (objectAdded) {
-                return;
-            }
+    camera.addEventListener("gps-camera-update-position", (event) => {
 
-            const latitude =
-                event.detail.position.latitude;
-
-            const longitude =
-                event.detail.position.longitude;
-
-            console.log("Mi posición:");
-            console.log("Latitud:", latitude);
-            console.log("Longitud:", longitude);
-
-            // Distancia del objeto respecto al usuario
-            const distance = 5;
-
-            // Aproximación:
-            // 1 grado de latitud ≈ 111320 metros
-            const latitudeOffset =
-                distance / 111320;
-
-            const objectLatitude =
-                latitude + latitudeOffset;
-
-            const objectLongitude =
-                longitude;
-
-            console.log("Objeto:");
-            console.log(
-                "Latitud:",
-                objectLatitude
-            );
-
-            console.log(
-                "Longitud:",
-                objectLongitude
-            );
-
-            const object =
-                document.createElement("a-entity");
-
-            object.setAttribute(
-                "gltf-model",
-                "#san-martin"
-            );
-
-            object.setAttribute(
-                "gps-new-entity-place",
-                `latitude: ${objectLatitude};
-                 longitude: ${objectLongitude};`
-            );
-
-            object.setAttribute(
-                "scale",
-                "1 1 1"
-            );
-
-            scene.appendChild(object);
-
-            objectAdded = true;
-
-            console.log(
-                "Objeto AR agregado correctamente"
-            );
+        if (objectAdded) {
+            return;
         }
-    );
-});
+
+        const latitude = event.detail.position.latitude;
+        const longitude = event.detail.position.longitude;
+
+        console.log("Mi posición:");
+        console.log("Latitud:", latitude);
+        console.log("Longitud:", longitude);
+
+        /*
+         * Colocamos el objeto aproximadamente
+         * 5 metros al norte de nuestra posición.
+         *
+         * 1 grado de latitud ≈ 111.320 metros
+         */
+        const offsetMeters = 5;
+
+        const latitudeOffset = offsetMeters / 111320;
+
+        const objectLatitude = latitude + latitudeOffset;
+        const objectLongitude = longitude;
+
+        console.log("Posición del objeto:");
+        console.log("Latitud:", objectLatitude);
+        console.log("Longitud:", objectLongitude);
+
+        const entity = document.createElement("a-entity");
+
+        entity.setAttribute(
+            "gltf-model",
+            "#animated-asset"
+        );
+
+        entity.setAttribute(
+            "gps-new-entity-place",
+            {
+                latitude: objectLatitude,
+                longitude: objectLongitude
+            }
+        );
+
+        entity.setAttribute(
+            "scale",
+            "2 2 2"
+        );
+
+        scene.appendChild(entity);
+
+        objectAdded = true;
+    });
+};
